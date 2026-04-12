@@ -1,0 +1,137 @@
+================================================================================
+                        INFERNO — INSTALLATION GUIDE
+================================================================================
+
+Clone the GitHub Repository in the project folder. Write all commands in the terminal of this directory.
+PREREQUISITES
+-------------
+
+  Requirement          Minimum Version
+  -------------------  ---------------
+  Node.js              v18.0.0
+  npm                  Included with Node.js
+  A Discord account    —
+
+
+--------------------------------------------------------------------------------
+STEP 1 — CREATE A DISCORD BOT APPLICATION
+--------------------------------------------------------------------------------
+
+  1. Go to discord.com/developers/applications
+
+  2. Click New Application → give it a name (e.g. Inferno) → click Create
+
+  3. In the left sidebar click Bot
+
+  4. Click Reset Token → confirm → copy the token and save it somewhere safe
+
+  5. On the same page scroll down and enable all three Privileged Gateway Intents:
+
+       - Presence Intent
+       - Server Members Intent
+       - Message Content Intent
+
+  6. Click Save Changes
+
+
+--------------------------------------------------------------------------------
+STEP 2 — INVITE THE BOT TO YOUR SERVER
+--------------------------------------------------------------------------------
+
+  1. In the left sidebar go to OAuth2 → URL Generator
+
+  2. Under Scopes check:
+       - bot
+       - applications.commands
+
+  3. Under Bot Permissions check:
+       - Send Messages
+       - Attach Files
+       - Read Message History
+       - Use Slash Commands
+       - Embed Links
+
+  4. Copy the generated URL at the bottom → paste it in your browser
+
+  5. Select your server → click Authorise
+
+
+--------------------------------------------------------------------------------
+STEP 3 — GET YOUR IDs
+--------------------------------------------------------------------------------
+
+  Enable Developer Mode in Discord first:
+  Settings → Advanced → Developer Mode → ON
+
+  ID           How to get it
+  -----------  ---------------------------------------------------------------
+  Client ID    Developer Portal → your application → General Information
+               → copy Application ID
+  Guild ID     Right-click your server icon in Discord → Copy Server ID
+
+
+--------------------------------------------------------------------------------
+STEP 4 — SET UP THE ENVIRONMENT FILE
+--------------------------------------------------------------------------------
+
+  In the root of the project folder, create a file named .env and add:
+
+      DISCORD_TOKEN=your_bot_token_here
+      CLIENT_ID=your_application_id_here
+      GUILD_ID=your_server_id_here
+
+  NOTE: Never share or commit your .env file. It is already listed in
+        .gitignore so it will not be pushed to GitHub.
+
+
+--------------------------------------------------------------------------------
+STEP 5 — INSTALL DEPENDENCIES
+--------------------------------------------------------------------------------
+
+  Run the following command in your project folder:
+
+      npm install
+      npm install canvas
+      npm install @napi-rs/canvas gif-encoder-2
+
+
+--------------------------------------------------------------------------------
+STEP 6 — REGISTER SLASH COMMANDS
+--------------------------------------------------------------------------------
+
+  Run this once to register the bot's commands with Discord.
+  Re-run it any time you add or rename a command.
+
+      node src/discord/registerCommands.js
+
+  Expected output:
+
+      Registering GUILD commands (instant) for guild: 123456789...
+      Guild commands registered.
+
+  To clear all commands (fixes duplicate command issues):
+
+      CLEAR=true node src/discord/registerCommands.js
+
+
+================================================================================
+                           RUNNING THE BOT
+================================================================================
+
+  Start the bot with:
+
+      npm start
+
+  Expected output:
+
+      Logged in as Inferno#1234
+      [boardRenderer] Loaded board image: /path/to/board_image.png (1028x1024)
+
+  To stop the bot press Ctrl + C.
+
+
+================================================================================
+                    Inferno  |  Team Triad
+        Anamitra Basu (BC2025008)  |  Aaronya Chakraborty (IC2025003)
+                      Shreyansh Sinha (BC2025091)
+================================================================================

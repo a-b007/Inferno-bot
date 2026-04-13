@@ -12,10 +12,10 @@ createServer((req, res) => {
   console.log(`🌐 Health check server listening on port ${PORT}`);
 });
 
-// ── Debug: confirm token is present (never logs the actual token) ─────────────
+// ── Confirm token is present ──────────────────────────────────────────────────
 const token = process.env.DISCORD_TOKEN;
 if (!token) {
-  console.error('❌ DISCORD_TOKEN is not set — check your environment variables on Render.');
+  console.error('❌ DISCORD_TOKEN is not set — check your environment variables.');
   process.exit(1);
 }
 console.log(`🔑 Token loaded: ${token.slice(0, 10)}...`);
@@ -25,7 +25,14 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 });
 
+// If login hangs for 30s it's a network/firewall issue on the host
+const loginTimeout = setTimeout(() => {
+  console.error('❌ Login timed out after 30s — likely a network issue on this host.');
+  process.exit(1);
+}, 30000);
+
 client.once('clientReady', () => {
+  clearTimeout(loginTimeout);
   console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
@@ -48,6 +55,7 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.login(token).catch(err => {
-  console.error('❌ Failed to login to Discord:', err.message);
+  clearTimeout(loginTimeout);
+  console.error('❌ Failed to login:', err.message);
   process.exit(1);
 });

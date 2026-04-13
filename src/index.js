@@ -3,8 +3,7 @@ import { createServer }              from 'http';
 import 'dotenv/config';
 import { handleInteraction } from './discord/interactionHandler.js';
 
-// ── Tiny HTTP server — required by Render Web Service to stay alive ───────────
-// Render pings this every few minutes. Without it Render thinks the app crashed.
+// ── Tiny HTTP server ──────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
 createServer((req, res) => {
   res.writeHead(200);
@@ -12,6 +11,14 @@ createServer((req, res) => {
 }).listen(PORT, () => {
   console.log(`🌐 Health check server listening on port ${PORT}`);
 });
+
+// ── Debug: confirm token is present (never logs the actual token) ─────────────
+const token = process.env.DISCORD_TOKEN;
+if (!token) {
+  console.error('❌ DISCORD_TOKEN is not set — check your environment variables on Render.');
+  process.exit(1);
+}
+console.log(`🔑 Token loaded: ${token.slice(0, 10)}...`);
 
 // ── Discord bot ───────────────────────────────────────────────────────────────
 const client = new Client({
@@ -40,4 +47,7 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(token).catch(err => {
+  console.error('❌ Failed to login to Discord:', err.message);
+  process.exit(1);
+});
